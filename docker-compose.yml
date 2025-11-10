@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    container_name: helixhr_db
+    environment:
+      POSTGRES_USER: helix
+      POSTGRES_PASSWORD: helixpass
+      POSTGRES_DB: helixhr
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./infra/db/init.sql:/docker-entrypoint-initdb.d/01_init.sql:ro
+
+  backend:
+    build: ./backend
+    container_name: helixhr_backend
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+
+  frontend:
+    build: ./frontend
+    container_name: helixhr_frontend
+    depends_on:
+      - backend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+    environment:
+      - VITE_API_BASE=http://localhost:8000
+
+volumes:
+  db_data:
