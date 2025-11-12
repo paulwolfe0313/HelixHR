@@ -23,7 +23,7 @@ def upsert_employee(db, tenant_id, name, email, role, pto_days):
     ).fetchone()
     emp_id = emp[0]
 
-    # PTO row
+
     db.execute(
         text("""
             INSERT INTO pto_balances (id, tenant_id, employee_id, pto_days_remaining)
