@@ -2,10 +2,10 @@ FROM node:20
 
 WORKDIR /app
 
-# Copy package manifests first (better layer cache)
+# Copy only manifests first (cache-friendly)
 COPY package*.json ./
 
-# Harden installs against slow registries / firewalls
+# Harden installs (less flake on Docker networks)
 RUN npm set fund false \
  && npm set audit false \
  && npm config set fetch-retries 5 \
@@ -13,11 +13,11 @@ RUN npm set fund false \
  && npm config set fetch-retry-maxtimeout 120000 \
  && npm config set fetch-timeout 120000
 
-# Install deps (use lockfile if present)
-RUN if [ -f package-lock.json ]; then npm ci --no-audit --progress=false; \
-    else npm install --no-audit --progress=false; fi
+# Install deps. If you have a lockfile, this will ensure it is respected in future,
+# but we use npm install here to be tolerant while you’re iterating.
+RUN npm install --no-audit --progress=false
 
-# Copy the rest of the app
+# Now copy the rest of the app
 COPY . .
 
 EXPOSE 5173
