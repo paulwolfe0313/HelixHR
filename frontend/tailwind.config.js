@@ -5,7 +5,7 @@ export default {
     extend: {
       colors: {
         primary: {
-          DEFAULT: "#4f46e5", // indigo-600 vibe
+          DEFAULT: "#4f46e5",
           50: "#eef2ff",
           100: "#e0e7ff",
           200: "#c7d2fe",
@@ -17,6 +17,9 @@ export default {
           800: "#3730a3",
           900: "#312e81"
         }
+      },
+      boxShadow: {
+        'elev': '0 12px 48px rgba(2,6,23,0.10)'
       }
     }
   },
